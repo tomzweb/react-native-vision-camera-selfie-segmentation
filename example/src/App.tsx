@@ -2,31 +2,28 @@ import * as React from 'react';
 
 import { StyleSheet, View, Text } from 'react-native';
 import { multiply } from 'react-native-vision-camera-selfie-segmentation';
-import {Camera, useCameraDevices} from "react-native-vision-camera";
+import { Camera, useCameraDevices } from 'react-native-vision-camera';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
   const devices = useCameraDevices();
-  const device = devices.back
+  const device = devices.back;
 
   React.useEffect(() => {
+    multiply(5, 3).then((result) => console.log('multiply', result));
     const permissions = async () => {
-      const newCameraPermission = await Camera.requestCameraPermission()
-      const newMicrophonePermission = await Camera.requestMicrophonePermission()
-    }
+      const newCameraPermission = await Camera.requestCameraPermission();
+      const newMicrophonePermission =
+        await Camera.requestMicrophonePermission();
+    };
 
     permissions();
   }, []);
 
-  if (device == null) return <></>
+  if (device == null) return <></>;
 
   return (
     <View style={styles.container}>
-      <Camera
-        style={StyleSheet.absoluteFill}
-        device={device}
-        isActive={true}
-      />
+      <Camera style={StyleSheet.absoluteFill} device={device} isActive={true} />
     </View>
   );
 }

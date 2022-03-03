@@ -13,7 +13,7 @@
     "android",
     "ios",
     "cpp",
-    "react-native-vision-camera-selfie-segmentation.podspec",
+    "vision-camera-selfie-segmentation.podspec",
     "!lib/typescript/example",
     "!android/build",
     "!ios/build",
