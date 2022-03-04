@@ -11,7 +11,8 @@ export const Image = ({ source }: { source: string }) => {
 };
 const styles = StyleSheet.create({
   image: {
-    height: 200,
-    width: 200,
+    flex: 1,
+    height: '50%',
+    width: '100%',
   },
 });

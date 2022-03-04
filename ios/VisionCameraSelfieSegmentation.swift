@@ -34,6 +34,7 @@ public class VisionCameraSelfieSegmentation: NSObject, FrameProcessorPluginBase 
       
 //      segmenter.process(visionImage) { mask, error in
 //        guard error == nil else {
+//            print(error)
 //          // Error.
 //          return
 //        }
@@ -55,11 +56,11 @@ public class VisionCameraSelfieSegmentation: NSObject, FrameProcessorPluginBase 
         print("Failed to perform segmentation with error: \(error.localizedDescription).")
         return nil
       }
-      
+
       UIUtilities.applySegmentationMask(mask: mask , to: bufferImage, backgroundColor: UIColor.blue, foregroundColor: UIColor.red)
 
       // To Image/Base64
-      let newUiImage = UIUtilities.createUIImage(from: bufferImage, orientation: frame.orientation)!;
+      let newUiImage = UIUtilities.createUIImage(from: bufferImage, orientation: visionImage.orientation)!;
       let base64Image = UIUtilities.convertImageToBase64String(img: newUiImage)
       
       returnImage = "data:image/png;base64," + base64Image;

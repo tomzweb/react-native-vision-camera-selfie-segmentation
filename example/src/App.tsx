@@ -17,7 +17,7 @@ import { Image } from './components/Image';
 
 export default function App() {
   const devices = useCameraDevices();
-  const device = devices.back;
+  const device = devices.front;
   const base64Image = useSharedValue<string>('');
   const [image, setImage] = useState<string>('');
 
@@ -63,8 +63,8 @@ export default function App() {
 const styles = StyleSheet.create({
   camera: {
     flex: 1,
-    width: 200,
-    height: 200,
+    height: '50%',
+    width: '100%',
   },
   container: {
     flex: 1,
