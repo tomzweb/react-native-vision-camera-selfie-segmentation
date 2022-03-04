@@ -1,35 +1,40 @@
 import * as React from 'react';
 
-import { Animated, Image, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { getSelfieSegments } from 'react-native-vision-camera-selfie-segmentation';
 import {
   Camera,
   useCameraDevices,
   useFrameProcessor,
 } from 'react-native-vision-camera';
-import { useSharedValue } from 'react-native-reanimated';
-import { useEffect } from 'react';
-const AnimatedImage = Animated.createAnimatedComponent(Image);
+import {
+  runOnJS,
+  useAnimatedReaction,
+  useSharedValue,
+} from 'react-native-reanimated';
+import { useEffect, useState } from 'react';
+import { Image } from './components/Image';
 
 export default function App() {
   const devices = useCameraDevices();
   const device = devices.back;
   const base64Image = useSharedValue<string>('');
+  const [image, setImage] = useState<string>('');
 
-  const frameProcessor = useFrameProcessor(
-    (frame) => {
-      'worklet';
-      console.log('UPDATING BASE 64 IMAGE');
-      const image = getSelfieSegments(frame);
-      base64Image.value = image;
-    },
-    [base64Image]
-  );
+  const updateImage = (newImage: string) => {
+    setImage(newImage);
+  };
+
+  const frameProcessor = useFrameProcessor((frame) => {
+    'worklet';
+
+    base64Image.value = getSelfieSegments(frame);
+    runOnJS(updateImage)(base64Image.value);
+  }, []);
+
   useEffect(() => {
     const permissions = async () => {
-      const newCameraPermission = await Camera.requestCameraPermission();
-      const newMicrophonePermission =
-        await Camera.requestMicrophonePermission();
+      await Camera.requestCameraPermission();
     };
 
     permissions();
@@ -39,16 +44,17 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <AnimatedImage
-        style={styles.camera}
-        source={{ uri: `data:image/jpeg;base64,${base64Image.value}` }}
-      />
+      <Image source={image} />
       <Camera
         style={styles.camera}
         device={device}
+        enableDepthData={true}
         isActive={true}
-        frameProcessorFps={3}
+        frameProcessorFps={30}
         frameProcessor={frameProcessor}
+        onFrameProcessorPerformanceSuggestionAvailable={(suggestion) => {
+          console.log(suggestion);
+        }}
       />
     </View>
   );
@@ -58,7 +64,7 @@ const styles = StyleSheet.create({
   camera: {
     flex: 1,
     width: 200,
-    // height: 200,
+    height: 200,
   },
   container: {
     flex: 1,

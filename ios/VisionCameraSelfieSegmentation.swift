@@ -1,5 +1,6 @@
 import CoreVideo
 import UIKit
+import CoreMedia
 
 
 @objc(VisionCameraSelfieSegmentation)
@@ -9,6 +10,7 @@ public class VisionCameraSelfieSegmentation: NSObject, FrameProcessorPluginBase 
     
   @objc
   public static func callback(_ frame: Frame!, withArgs _: [Any]!) -> Any! {
+            
       guard let imageBuffer = CMSampleBufferGetImageBuffer(frame.buffer) else {
         print("Failed to get CVPixelBuffer!")
         return nil
@@ -28,6 +30,23 @@ public class VisionCameraSelfieSegmentation: NSObject, FrameProcessorPluginBase 
       let options = SelfieSegmenterOptions()
       let segmenter = Segmenter.segmenter(options: options)
       
+      var returnImage = "";
+      
+//      segmenter.process(visionImage) { mask, error in
+//        guard error == nil else {
+//          // Error.
+//          return
+//        }
+//
+//        UIUtilities.applySegmentationMask(mask: mask! , to: bufferImage, backgroundColor: UIColor.blue, foregroundColor: UIColor.red)
+//        let newUiImage = UIUtilities.createUIImage(from: bufferImage, orientation: frame.orientation)!;
+//        let base64Image = UIUtilities.convertImageToBase64String(img: newUiImage)
+//        returnImage = "data:image/png;base64," + base64Image
+//      }
+            
+      
+      
+     // Synchronuse
       var mask: SegmentationMask
       do {
         mask = try segmenter.results(in: visionImage)
@@ -37,16 +56,17 @@ public class VisionCameraSelfieSegmentation: NSObject, FrameProcessorPluginBase 
         return nil
       }
       
-      
       UIUtilities.applySegmentationMask(mask: mask , to: bufferImage, backgroundColor: UIColor.blue, foregroundColor: UIColor.red)
-      
+
+      // To Image/Base64
       let newUiImage = UIUtilities.createUIImage(from: bufferImage, orientation: frame.orientation)!;
-      print("HERE")
-      print(newUiImage)
       let base64Image = UIUtilities.convertImageToBase64String(img: newUiImage)
       
-      return base64Image
-
+      returnImage = "data:image/png;base64," + base64Image;
+      
+      
+      return returnImage;
+      
   }
    
 
