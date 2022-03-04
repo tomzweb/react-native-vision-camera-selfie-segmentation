@@ -1,9 +1,7 @@
-#import <React/RCTBridgeModule.h>
+#import <Foundation/Foundation.h>
+#import <VisionCamera/FrameProcessorPlugin.h>
 
-@interface RCT_EXTERN_MODULE(VisionCameraSelfieSegmentation, NSObject)
-
-RCT_EXTERN_METHOD(multiply:(float)a withB:(float)b
-                 withResolver:(RCTPromiseResolveBlock)resolve
-                 withRejecter:(RCTPromiseRejectBlock)reject)
-
+@interface VISION_EXPORT_SWIFT_FRAME_PROCESSOR(getSelfieSegments, VisionCameraSelfieSegmentation)
 @end
+
+

@@ -1,25 +1,13 @@
-import { NativeModules, Platform } from 'react-native';
+/* globals __selfieSegmentation */
+import type { Frame } from 'react-native-vision-camera';
 
-const LINKING_ERROR =
-  `The package 'react-native-vision-camera-selfie-segmentation' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo managed workflow\n';
-
-console.log('Native Modules', NativeModules);
-
-const VisionCameraSelfieSegmentation =
-  NativeModules.VisionCameraSelfieSegmentation
-    ? NativeModules.VisionCameraSelfieSegmentation
-    : new Proxy(
-        {},
-        {
-          get() {
-            throw new Error(LINKING_ERROR);
-          },
-        }
-      );
-
-export function multiply(a: number, b: number): Promise<number> {
-  return VisionCameraSelfieSegmentation.multiply(a, b);
+/**
+ * Returns an array of matching `ImageLabel`s for the given frame.
+ *
+ * This algorithm executes within **~60ms**, so a frameRate of **16 FPS** perfectly allows the algorithm to run without dropping a frame. Anything higher might make video recording stutter, but works too.
+ */
+export function getSelfieSegments(frame: Frame): string {
+  'worklet';
+  // @ts-expect-error Frame Processors are not typed.
+  return __getSelfieSegments(frame);
 }
