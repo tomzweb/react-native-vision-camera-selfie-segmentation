@@ -6,7 +6,6 @@ const AnimatedImage = Animated.createAnimatedComponent(ImageComponent);
 Animated.addWhitelistedNativeProps({ uri: true });
 
 export const Image = ({ source }: { source: string }) => {
-  console.log('HERE');
   return <AnimatedImage style={styles.image} source={{ uri: source }} />;
 };
 const styles = StyleSheet.create({

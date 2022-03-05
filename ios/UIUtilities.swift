@@ -7,9 +7,9 @@ public class UIUtilities {
   // MARK: - Public
     
     
-    public static func convertImageToBase64String (img: UIImage) -> String {
-        return img.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
-    }
+  public static func convertImageToBase64String (img: UIImage) -> String {
+      return img.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
+  }
 
   public static func addCircle(
     atPoint point: CGPoint,

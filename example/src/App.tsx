@@ -44,13 +44,12 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Image source={image} />
+      {image !== '' && <Image source={image} />}
       <Camera
         style={styles.camera}
         device={device}
-        enableDepthData={true}
         isActive={true}
-        frameProcessorFps={30}
+        frameProcessorFps={7}
         frameProcessor={frameProcessor}
         onFrameProcessorPerformanceSuggestionAvailable={(suggestion) => {
           console.log(suggestion);
