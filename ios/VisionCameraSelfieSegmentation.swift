@@ -8,7 +8,8 @@ public class VisionCameraSelfieSegmentation: NSObject, FrameProcessorPluginBase 
   private static let context = CIContext(options: nil)
     
   @objc
-  public static func callback(_ frame: Frame!, withArgs _: [Any]!) -> Any! {
+  public static func callback(_ frame: Frame!, withArgs args: [Any]!) -> Any! {
+      
       
       // set up the segmenter
       let options = SelfieSegmenterOptions()
@@ -44,9 +45,13 @@ public class VisionCameraSelfieSegmentation: NSObject, FrameProcessorPluginBase 
     
       // now we need to convert the UI Image to an image buffer
       let bufferImage = UIUtilities.createImageBuffer(from: uiImage)!
+      
+      let colors = args[0] as? [String: String]
+      let bgColor = colors?["backgroundColor"] != nil ? UIColor(hex: colors!["backgroundColor"]!) : UIColor.blue
+      let fgColor = colors?["foregroundColor"] != nil ? UIColor(hex: colors!["foregroundColor"]!) : nil
 
       // apply the mask to the buffer image
-      UIUtilities.applySegmentationMask(mask: mask , to: bufferImage, backgroundColor: UIColor.blue, foregroundColor: nil)
+      UIUtilities.applySegmentationMask(mask: mask , to: bufferImage, backgroundColor: bgColor, foregroundColor: fgColor)
 
       
       // now convert back to a UI image and return the base64 image

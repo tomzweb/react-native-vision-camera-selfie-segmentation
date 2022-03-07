@@ -7,11 +7,7 @@ import {
   useCameraDevices,
   useFrameProcessor,
 } from 'react-native-vision-camera';
-import {
-  runOnJS,
-  useAnimatedReaction,
-  useSharedValue,
-} from 'react-native-reanimated';
+import { runOnJS, useSharedValue } from 'react-native-reanimated';
 import { useEffect, useState } from 'react';
 import { Image } from './components/Image';
 
@@ -27,8 +23,10 @@ export default function App() {
 
   const frameProcessor = useFrameProcessor((frame) => {
     'worklet';
-
-    base64Image.value = getSelfieSegments(frame);
+    base64Image.value = getSelfieSegments(frame, {
+      backgroundColor: '#000000',
+      foregroundColor: '#FF0000',
+    });
     runOnJS(updateImage)(base64Image.value);
   }, []);
 
@@ -36,7 +34,6 @@ export default function App() {
     const permissions = async () => {
       await Camera.requestCameraPermission();
     };
-
     permissions();
   }, []);
 
