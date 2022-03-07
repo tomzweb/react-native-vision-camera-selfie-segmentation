@@ -41,12 +41,14 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {image !== '' && <Image source={image} />}
+      <View style={styles.imageContainer}>
+        {image !== '' && <Image source={image} />}
+      </View>
       <Camera
         style={styles.camera}
         device={device}
         isActive={true}
-        frameProcessorFps={7}
+        frameProcessorFps={1}
         frameProcessor={frameProcessor}
         onFrameProcessorPerformanceSuggestionAvailable={(suggestion) => {
           console.log(suggestion);
@@ -57,14 +59,19 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#FFFFFF',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  imageContainer: {
+    height: '50%',
+    width: '100%',
+  },
   camera: {
     flex: 1,
     height: '50%',
     width: '100%',
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
