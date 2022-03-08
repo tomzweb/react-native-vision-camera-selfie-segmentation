@@ -83,14 +83,13 @@ public class VisionCameraSelfieSegmentationFrameProcessorPlugin extends FramePro
     int maskHeight = mask.getHeight();
     ByteBuffer bufferMask = mask.getBuffer();
 
-    int background = Color.parseColor(bgColor);
-    int foreground = fgColor.equals("") ? 0 : Color.parseColor(fgColor);
+    int backgroundColor = Color.parseColor(bgColor);
+    int foregroundColor = fgColor.equals("") ? 0 : Color.parseColor(fgColor);
 
     for (int y = 0; y < maskHeight; y++) {
       for (int x = 0; x < maskWidth; x++) {
-        double confidence = bufferMask.getFloat();
-        int bgAlpha = (int) ((1.0 - confidence)  * 255);
-        int bgPixel = confidence >= 1 ? foreground != 0 ? foreground : image.getPixel(x, y) : background;
+        double backgroundLikelihood = 1 - bufferMask.getFloat();
+        int bgPixel = backgroundLikelihood > 0.2 ? backgroundColor : foregroundColor != 0 ? foregroundColor : image.getPixel(x, y) ;
 
         bgBitmap.setPixel(x, y, bgPixel);
       }

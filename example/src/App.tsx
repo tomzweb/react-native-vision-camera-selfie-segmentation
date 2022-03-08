@@ -23,7 +23,7 @@ export default function App() {
 
   const frameProcessor = useFrameProcessor((frame) => {
     'worklet';
-    base64Image.value = getSelfieSegments(frame, '#FFF000');
+    base64Image.value = getSelfieSegments(frame, '#FFF000', '#000000');
     runOnJS(updateImage)(base64Image.value);
   }, []);
 
