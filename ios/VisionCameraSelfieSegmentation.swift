@@ -45,10 +45,14 @@ public class VisionCameraSelfieSegmentation: NSObject, FrameProcessorPluginBase 
     
       // now we need to convert the UI Image to an image buffer
       let bufferImage = UIUtilities.createImageBuffer(from: uiImage)!
+    
       
-      let colors = args[0] as? [String: String]
-      let bgColor = colors?["backgroundColor"] != nil ? UIColor(hex: colors!["backgroundColor"]!) : UIColor.blue
-      let fgColor = colors?["foregroundColor"] != nil ? UIColor(hex: colors!["foregroundColor"]!) : nil
+      let background = args[0] as? String
+      let forground = args[1] as? String
+    
+
+      let bgColor = background != nil ? UIColor(hex: background!) : UIColor.blue
+      let fgColor = forground != nil ? UIColor(hex: forground!) : nil
 
       // apply the mask to the buffer image
       UIUtilities.applySegmentationMask(mask: mask , to: bufferImage, backgroundColor: bgColor, foregroundColor: fgColor)
@@ -61,24 +65,5 @@ public class VisionCameraSelfieSegmentation: NSObject, FrameProcessorPluginBase 
       return "data:image/jpeg;base64," + base64Image;
       
   }
-   
-    
-    
-//      segmenter.process(visionImage) { mask, error in
-//        guard error == nil else {
-//            print(error)
-//          // Error.
-//          return
-//        }
-//
-//          if (mask != nil) {
-//              UIUtilities.applySegmentationMask(mask: mask! , to: bufferImage, backgroundColor: UIColor.blue, foregroundColor: nil)
-//              let newUiImage = UIUtilities.createUIImage(from: bufferImage, orientation: frame.orientation)!;
-//              let base64Image = UIUtilities.convertImageToBase64String(img: newUiImage)
-//              returnImage = "data:image/png;base64," + base64Image
-//          }
-//      }
-          
-    
 
 }

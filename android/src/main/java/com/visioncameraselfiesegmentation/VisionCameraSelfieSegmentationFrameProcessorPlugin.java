@@ -35,6 +35,7 @@ public class VisionCameraSelfieSegmentationFrameProcessorPlugin extends FramePro
   @Override
   public Object callback(ImageProxy image, Object[] params) {
 
+    // setup the segmentation options
     SelfieSegmenterOptions options =
       new SelfieSegmenterOptions.Builder()
         .setDetectorMode(SelfieSegmenterOptions.STREAM_MODE)
@@ -46,25 +47,25 @@ public class VisionCameraSelfieSegmentationFrameProcessorPlugin extends FramePro
     @SuppressLint("UnsafeOptInUsageError")
     Image iImage = image.getImage();
 
-
+    // set colors from params
     bgColor = params.length >= 1 ? String.valueOf(params[0]) : "#000000";
     fgColor = params.length >= 2 ? String.valueOf(params[1]) : "";
-    Log.i("COLORS", bgColor + " " + fgColor + " " + params.length);
-
     String base64Image = "";
 
     if (iImage.equals(null)) {
       return base64Image;
     }
 
+    // convert the image to a bitmap then input image
     Bitmap bitmap = rotateBitmap(toBitmap(iImage), image.getImageInfo().getRotationDegrees(), true, false);;
-
     InputImage inputImage = InputImage.fromBitmap(bitmap, 0);
 
+    // process the mask
     Task<SegmentationMask> result = segmenter.process(inputImage);
 
     try {
       SegmentationMask mask = Tasks.await(result);
+      // convert mask
       base64Image = generateBase64MaskImage(mask, bitmap);
     } catch (ExecutionException e) {
       // The Task failed, this is the same exception you'd get in a non-blocking
@@ -77,25 +78,27 @@ public class VisionCameraSelfieSegmentationFrameProcessorPlugin extends FramePro
 
 
   private String generateBase64MaskImage (SegmentationMask mask, Bitmap image) {
+    // create a blank bitmap to put our new mask/image
     Bitmap bgBitmap = Bitmap.createBitmap(image.getWidth(), image.getHeight(), image.getConfig());
-
     int maskWidth = mask.getWidth();
     int maskHeight = mask.getHeight();
     ByteBuffer bufferMask = mask.getBuffer();
 
+    // set the default colours
     int backgroundColor = Color.parseColor(bgColor);
     int foregroundColor = fgColor.equals("") ? 0 : Color.parseColor(fgColor);
 
     for (int y = 0; y < maskHeight; y++) {
       for (int x = 0; x < maskWidth; x++) {
+        // gets the likely hood of the background for this pixel
         double backgroundLikelihood = 1 - bufferMask.getFloat();
+        // sets the color of the pixel, depending if background or not
         int bgPixel = backgroundLikelihood > 0.2 ? backgroundColor : foregroundColor != 0 ? foregroundColor : image.getPixel(x, y) ;
-
         bgBitmap.setPixel(x, y, bgPixel);
       }
     }
 
-
+    // converts and returns base64 image
     return getBase64(bgBitmap);
   }
 
