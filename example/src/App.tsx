@@ -7,14 +7,13 @@ import {
   useCameraDevices,
   useFrameProcessor,
 } from 'react-native-vision-camera';
-import { runOnJS, useSharedValue } from 'react-native-reanimated';
+import { runOnJS } from 'react-native-reanimated';
 import { useEffect, useState } from 'react';
 import { Image } from './components/Image';
 
 export default function App() {
   const devices = useCameraDevices();
-  const device = devices.front;
-  const base64Image = useSharedValue<string>('');
+  const device = devices.back;
   const [image, setImage] = useState<string>('');
 
   const updateImage = (newImage: string) => {
@@ -23,8 +22,8 @@ export default function App() {
 
   const frameProcessor = useFrameProcessor((frame) => {
     'worklet';
-    base64Image.value = getSelfieSegments(frame, '#FFF000');
-    runOnJS(updateImage)(base64Image.value);
+    const image = getSelfieSegments(frame, '#FF0000', '#00FF00');
+    runOnJS(updateImage)(image);
   }, []);
 
   useEffect(() => {
